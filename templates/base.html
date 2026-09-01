@@ -1,0 +1,373 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}NCI-SCP | National Car Import Supply Chain Platform{% endblock %}</title>
+  <meta name="description" content="National Car Import Supply Chain Management and Tracking Platform with Cryptographic SHA-256 Document Verification.">
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2'><rect x='1' y='3' width='15' height='13'></rect><polygon points='16 8 20 8 23 11 23 16 16 16 16 8'></polygon><circle cx='5.5' cy='18.5' r='2.5'></circle><circle cx='18.5' cy='18.5' r='2.5'></circle></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <div class="container">
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon-wrapper">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+        </div>
+        <div>
+          <h1>NCI-SCP</h1>
+          <p>National Car Import Platform</p>
+        </div>
+      </div>
+
+      <nav>
+        <a href="{% url 'dashboard' %}" class="nav-item {% if request.path == '/dashboard/' or request.path == '/' %}active{% endif %}">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="{% url 'shipments' %}" class="nav-item {% if request.path == '/shipments/' %}active{% endif %}">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+          <span>Shipments</span>
+        </a>
+        <a href="{% url 'workflow' %}" class="nav-item {% if request.path == '/workflow/' %}active{% endif %}">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          <span>Workflow</span>
+        </a>
+        <a href="{% url 'documents' %}" class="nav-item {% if request.path == '/documents/' %}active{% endif %}">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span>Documents</span>
+        </a>
+        <a href="{% url 'stakeholders' %}" class="nav-item {% if request.path == '/stakeholders/' %}active{% endif %}">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Stakeholders</span>
+        </a>
+        <a href="{% url 'notifications' %}" class="nav-item {% if request.path == '/notifications/' %}active{% endif %}">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span>Notifications</span>
+          {% if kpi_pending_actions %}
+          <span class="nav-badge">{{ kpi_pending_actions }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'reports' %}" class="nav-item {% if request.path == '/reports/' %}active{% endif %}">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Reports</span>
+        </a>
+        <a href="{% url 'messages' %}" class="nav-item {% if request.path == '/messages/' %}active{% endif %}">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>Messages</span>
+        </a>
+        <a href="{% url 'audit' %}" class="nav-item {% if request.path == '/audit/' %}active{% endif %}">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span>Audit Trail</span>
+        </a>
+        <a href="{% url 'settings' %}" class="nav-item {% if request.path == '/settings/' %}active{% endif %}">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div style="padding: 0 1rem; margin-bottom: 1rem;">
+        <button class="secondary-btn" style="width: 100%; justify-content: center; gap: 0.5rem;" onclick="openDutyCalculator()">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--primary-light)" fill="none" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+          <span>Duty Calculator</span>
+        </button>
+      </div>
+
+      <div class="user">
+        <a href="{% url 'profile' %}" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit; width: 100%;">
+          <div class="user-avatar">
+            <span id="userAvatarInitials">{% if user.is_authenticated %}{{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}{% else %}SU{% endif %}</span>
+          </div>
+          <div class="user-info">
+            <strong id="userNameLabel">{% if user.is_authenticated %}{{ user.first_name|default:user.username }}{% else %}System User{% endif %}</strong>
+            <p id="userRoleLabel">{% if user.is_authenticated %}{{ user.role }}{% else %}Importer{% endif %}</p>
+          </div>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+      <header>
+        <div class="header-intro">
+          <h2>Welcome back, <span id="headerGreetingName">User</span>!</h2>
+          <p>National Vehicle Import & Multimodal Customs Pipeline Status.</p>
+        </div>
+
+        <div class="header-tools">
+          <div class="search-input-wrapper">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="search" placeholder="Search shipments or VIN..." onkeyup="filterGlobalShipments(this.value)">
+          </div>
+
+          <select id="userRole" onchange="switchRole(this.value)" aria-label="Select portal role">
+            <option value="importer">Importer (GT Motors)</option>
+            <option value="customs">Customs Officer (ECC)</option>
+            <option value="port">Port Operator (Modjo)</option>
+            <option value="forwarder">Freight Forwarder (ESLSE)</option>
+            <option value="bank">Bank Official (CBE)</option>
+            <option value="registration">Registration Officer (MoTL)</option>
+            <option value="admin">System Administrator</option>
+          </select>
+
+          <span id="liveDateTime">Loading time...</span>
+        </div>
+      </header>
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <!-- MODALS -->
+
+  <!-- Create New Shipment Modal -->
+  <div id="newShipmentForm" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalNewShipmentTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalNewShipmentTitle">Create New Shipment</h2>
+        <button type="button" class="close-btn" onclick="closeModal('newShipmentForm')">&times;</button>
+      </div>
+      <form onsubmit="handleNewShipment(event)">
+        <label for="vehicle">Vehicle Model / Make *</label>
+        <input type="text" id="vehicle" placeholder="e.g. Toyota Land Cruiser 2024" required>
+
+        <label for="vin">VIN / Chassis Number *</label>
+        <input type="text" id="vin" placeholder="e.g. JTMHV05J404981726" required>
+
+        <label for="port">Port of Origin & Transit *</label>
+        <input type="text" id="port" placeholder="e.g. Port of Yokohama -> Port of Djibouti" required>
+
+        <label for="destination">Destination Inland Dry Port</label>
+        <select id="destination">
+          <option value="Modjo Dry Port, Ethiopia">Modjo Dry Port, Ethiopia</option>
+          <option value="Kality Dry Port, Addis Ababa">Kality Dry Port, Addis Ababa</option>
+          <option value="Dire Dawa Dry Port">Dire Dawa Dry Port</option>
+          <option value="Kombolcha Dry Port">Kombolcha Dry Port</option>
+        </select>
+
+        <label for="importer_name">Importer Entity Name</label>
+        <input type="text" id="importer_name" value="GT Motors Ltd." placeholder="Importer Company Name">
+
+        <label for="duty_amount">Estimated Customs Duty (ETB)</label>
+        <input type="text" id="duty_amount" value="ETB 1,850,000" placeholder="e.g. ETB 1,850,000">
+
+        <label for="eta">Estimated Arrival Date (ETA) *</label>
+        <input type="date" id="eta" required>
+
+        <div class="modal-actions">
+          <button type="submit" class="primary-btn">Submit Shipment</button>
+          <button type="button" class="secondary-btn" onclick="closeModal('newShipmentForm')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Document Upload Modal -->
+  <div id="documentUploadForm" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalUploadDocTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalUploadDocTitle">Upload & Hash Document</h2>
+        <button type="button" class="close-btn" onclick="closeModal('documentUploadForm')">&times;</button>
+      </div>
+      <form onsubmit="handleUploadDoc(event)">
+        <label for="documentTitle">Document Title *</label>
+        <input type="text" id="documentTitle" placeholder="e.g. Bill of Lading SHP-2024-001" required>
+
+        <label for="documentType">Document Type *</label>
+        <select id="documentType">
+          <option value="Bill of Lading">Bill of Lading</option>
+          <option value="Commercial Invoice">Commercial Invoice</option>
+          <option value="Customs Declaration">Customs Declaration / Duty Assessment</option>
+          <option value="Bank Guarantee">Bank Guarantee / Letter of Credit (L/C)</option>
+          <option value="Certificate of Origin">Certificate of Origin</option>
+          <option value="Insurance Certificate">Insurance Certificate</option>
+          <option value="Import Permit">Ministry Import Permit</option>
+        </select>
+
+        <label for="docShipmentSelect">Associate with Shipment</label>
+        <select id="docShipmentSelect">
+          {% for s in shipments %}
+          <option value="{{ s.shipment_id }}">{{ s.shipment_id }} - {{ s.vehicle }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="uploaderName">Issuing Authority / Uploader</label>
+        <input type="text" id="uploaderName" value="GT Motors Ltd." placeholder="Issuing Entity">
+
+        <label for="documentFile">Select File (Calculates SHA-256)</label>
+        <input type="file" id="documentFile" onchange="previewFileHash(this)">
+        <div id="fileHashPreview" class="hash-preview-box">Select a file or leave blank for instant digital digest.</div>
+
+        <div class="modal-actions">
+          <button type="submit" class="primary-btn">Verify & Upload</button>
+          <button type="button" class="secondary-btn" onclick="closeModal('documentUploadForm')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Real-Time Track Shipment Modal -->
+  <div id="trackShipmentModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTrackTitle">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2 id="modalTrackTitle">Track Shipment by ID or VIN</h2>
+        <button type="button" class="close-btn" onclick="closeModal('trackShipmentModal')">&times;</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <p style="color: var(--text-muted); font-size: 0.88rem;">Search real-time multimodal milestones across Djibouti corridor to Ethiopian dry ports.</p>
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="text" id="trackSearchInput" placeholder="Enter Shipment ID (e.g. SHP-2024-001) or VIN..." style="flex: 1;" onkeyup="if(event.key === 'Enter') executeTrackSearch()">
+          <button type="button" class="primary-btn" onclick="executeTrackSearch()">Track</button>
+        </div>
+        <div id="trackResultBox">
+          <div class="track-placeholder-state">
+            <svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <p>Enter a tracking identifier to view live supply chain progression.</p>
+          </div>
+        </div>
+        <div class="modal-actions" style="margin-top: 0.5rem;">
+          <button type="button" class="secondary-btn" onclick="closeModal('trackShipmentModal')">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inspect Shipment Modal -->
+  <div id="inspectShipmentModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalInspectTitle">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2 id="modalInspectTitle">Shipment Inspection</h2>
+        <button type="button" class="close-btn" onclick="closeModal('inspectShipmentModal')">&times;</button>
+      </div>
+      <div id="inspectModalBody">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Compose Message Modal -->
+  <div id="composeMessageModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalComposeTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalComposeTitle">Send Stakeholder Notice</h2>
+        <button type="button" class="close-btn" onclick="closeModal('composeMessageModal')">&times;</button>
+      </div>
+      <form onsubmit="handleSendMessage(event)">
+        <label for="msgRecipient">Recipient Authority *</label>
+        <select id="msgRecipient">
+          <option value="Ethiopian Customs Commission">Ethiopian Customs Commission</option>
+          <option value="Modjo Dry Port Logistics">Modjo Dry Port Logistics</option>
+          <option value="Commercial Bank of Ethiopia">Commercial Bank of Ethiopia</option>
+          <option value="Ethiopian Maritime Authority">Ethiopian Maritime Authority</option>
+          <option value="GT Motors Ltd. (Importer)">GT Motors Ltd. (Importer)</option>
+          <option value="Ministry of Transport & Logistics">Ministry of Transport & Logistics</option>
+        </select>
+
+        <label for="msgShipmentId">Related Shipment ID</label>
+        <input type="text" id="msgShipmentId" placeholder="e.g. SHP-2024-001 (Optional)">
+
+        <label for="msgSubject">Subject *</label>
+        <input type="text" id="msgSubject" placeholder="e.g. Physical Inspection Clearance Request" required>
+
+        <label for="msgBody">Message Content *</label>
+        <textarea id="msgBody" rows="4" placeholder="Type your official message or status inquiry..." required></textarea>
+
+        <div class="modal-actions">
+          <button type="submit" class="primary-btn">Send Message</button>
+          <button type="button" class="secondary-btn" onclick="closeModal('composeMessageModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Ethiopian Customs Duty Calculator Modal -->
+  <div id="dutyCalculatorModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalDutyCalcTitle">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2 id="modalDutyCalcTitle">Ethiopian Customs Duty & Tariff Calculator</h2>
+        <button type="button" class="close-btn" onclick="closeDutyCalculator()">&times;</button>
+      </div>
+      <form onsubmit="handleCalculateDuty(event)">
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.25rem;">Automated valuation engine per Customs Proclamation No. 859/2014 and Ministry of Finance Directives.</p>
+
+        <div class="dashboard-grid-2col" style="gap: 1rem;">
+          <div>
+            <label for="dutyCifValue">CIF Value in ETB (Cost + Insurance + Freight) *</label>
+            <input type="number" id="dutyCifValue" value="1500000" min="10000" step="1000" required>
+          </div>
+          <div>
+            <label for="dutyVehicleType">Vehicle Classification *</label>
+            <select id="dutyVehicleType">
+              <option value="passenger">Passenger Vehicle (Sedan / SUV)</option>
+              <option value="commercial">Commercial Freight / Minibus</option>
+              <option value="pickup">Double Cab Pickup (Duty Concession)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="dashboard-grid-2col" style="gap: 1rem; margin-top: 0.5rem;">
+          <div>
+            <label for="dutyFuelType">Fuel & Powertrain Type *</label>
+            <select id="dutyFuelType">
+              <option value="petrol">Petrol / Gasoline</option>
+              <option value="diesel">Diesel</option>
+              <option value="hybrid">Hybrid Electric (HEV/PHEV)</option>
+              <option value="electric">100% Battery Electric (EV - 0% Duty)</option>
+            </select>
+          </div>
+          <div>
+            <label for="dutyEngineCc">Engine Displacement (CC)</label>
+            <input type="number" id="dutyEngineCc" value="2000" placeholder="e.g. 1998" min="0" max="8000">
+          </div>
+        </div>
+
+        <div style="margin-top: 0.5rem;">
+          <label for="dutyMfgYear">Year of Manufacture</label>
+          <input type="number" id="dutyMfgYear" value="2024" min="2000" max="2027">
+        </div>
+
+        <div class="modal-actions" style="margin-top: 1.25rem;">
+          <button type="submit" class="primary-btn">Compute Duty & Taxes</button>
+          <button type="button" class="secondary-btn" onclick="closeDutyCalculator()">Close</button>
+        </div>
+      </form>
+
+      <div id="dutyCalculationOutput"></div>
+    </div>
+  </div>
+
+  <!-- Generic Alert Modal -->
+  <div id="genericAlertModal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="genericAlertTitle">Notice</h2>
+        <button type="button" class="close-btn" onclick="closeModal('genericAlertModal')">&times;</button>
+      </div>
+      <p id="genericAlertMessage" style="color: var(--text-muted); margin: 1rem 0 1.5rem 0; white-space: pre-line; line-height: 1.5;"></p>
+      <div class="modal-actions">
+        <button type="button" class="primary-btn" onclick="closeModal('genericAlertModal')">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="{% static 'js/app.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

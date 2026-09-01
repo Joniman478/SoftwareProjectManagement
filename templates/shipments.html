@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shipments Management | NCI-SCP{% endblock %}
+
+{% block content %}
+<section id="shipments-view" class="view-panel">
+  <div class="view-header-flex">
+    <div>
+      <h2 class="view-title">Vehicle Import Shipments</h2>
+      <p class="view-subtitle">Consolidated inventory of vehicle consignments across the maritime and dry port corridors.</p>
+    </div>
+    <div class="view-header-actions">
+      <button class="secondary-btn" onclick="trackShipment()">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <span>Track VIN</span>
+      </button>
+      <button class="primary-btn" onclick="openNewShipment()">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>+ New Shipment</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters and Search Toolbar -->
+  <div class="filter-toolbar">
+    <div class="filter-pill-group">
+      <button class="filter-pill active" onclick="applyShipmentFilter('All', this)">All Shipments</button>
+      <button class="filter-pill" onclick="applyShipmentFilter('Booking Confirmed', this)">Booking</button>
+      <button class="filter-pill" onclick="applyShipmentFilter('In Transit', this)">In Transit</button>
+      <button class="filter-pill" onclick="applyShipmentFilter('Arrived at Port', this)">Arrived Port</button>
+      <button class="filter-pill" onclick="applyShipmentFilter('Customs Clearance', this)">Customs</button>
+      <button class="filter-pill" onclick="applyShipmentFilter('Released', this)">Released</button>
+      <button class="filter-pill" onclick="applyShipmentFilter('Delivered', this)">Delivered</button>
+    </div>
+
+    <div class="filter-search-box">
+      <input type="text" id="shipmentTableSearch" placeholder="Filter by ID, VIN, or vehicle..." onkeyup="filterShipmentsTable(this.value)">
+    </div>
+  </div>
+
+  <!-- Shipments Table -->
+  <div class="dashboard-section">
+    <div class="table-responsive">
+      <table id="fullShipmentsTable">
+        <thead>
+          <tr>
+            <th>Shipment ID</th>
+            <th>Vehicle & Importer</th>
+            <th>VIN / Chassis</th>
+            <th>Origin & Transit Port</th>
+            <th>Destination Dry Port</th>
+            <th>Status</th>
+            <th>Duty (ETB)</th>
+            <th>ETA</th>
+            <th>Progress</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="fullShipmentsTableBody">
+          {% for s in shipments %}
+          <tr data-status="{{ s.status }}" onclick="inspectShipment('{{ s.shipment_id }}')" style="cursor: pointer;">
+            <td class="shipment-id">{{ s.shipment_id }}</td>
+            <td>
+              <div class="vehicle-cell">
+                <img src="{{ s.image }}" alt="{{ s.vehicle }}" class="vehicle-img-thumb" onerror="this.src='/static/images/land_cruiser.png'">
+                <div>
+                  <div style="font-weight: 700;">{{ s.vehicle }}</div>
+                  <div style="font-size: 0.75rem; color: var(--primary-light);">{{ s.importer_name }}</div>
+                </div>
+              </div>
+            </td>
+            <td><code class="vin-code">{{ s.vin }}</code></td>
+            <td style="font-size: 0.82rem; color: var(--text-muted); max-width: 160px;">{{ s.port }}</td>
+            <td style="font-size: 0.82rem; color: var(--text-muted);">{{ s.destination }}</td>
+            <td>
+              <span class="badge {% if s.status == 'Booking Confirmed' %}badge-warning{% elif s.status == 'In Transit' %}badge-secondary{% elif s.status == 'Arrived at Port' %}badge-info{% elif s.status == 'Customs Clearance' %}badge-primary{% else %}badge-success{% endif %}">
+                {{ s.status }}
+              </span>
+            </td>
+            <td style="font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; color: var(--warning);">{{ s.duty_amount }}</td>
+            <td style="font-size: 0.82rem; color: var(--text-muted);">{{ s.eta|date:"M d, Y"|default:"TBD" }}</td>
+            <td>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: {{ s.progress }}%;"></div>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-dim);">{{ s.progress }}%</span>
+            </td>
+            <td>
+              <div class="table-actions-group" onclick="event.stopPropagation();">
+                <button class="table-btn" title="Inspect Details" onclick="inspectShipment('{{ s.shipment_id }}')">Inspect</button>
+                <button class="table-btn btn-advance" title="Advance Stage" onclick="advanceShipment('{{ s.shipment_id }}')">Advance</button>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

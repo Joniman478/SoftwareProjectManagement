@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Profile & Role Credentials | NCI-SCP{% endblock %}
+
+{% block content %}
+<section class="view-panel" style="max-width: 700px; margin: 1.5rem auto;">
+  <div class="view-header-flex">
+    <div>
+      <h2 class="view-title">Authorized Officer Profile</h2>
+      <p class="view-subtitle">Digital identity and role access parameters for supply chain operations.</p>
+    </div>
+    <div>
+      <a href="{% url 'logout' %}" class="secondary-btn" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.4);">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        <span>Sign Out</span>
+      </a>
+    </div>
+  </div>
+
+  {% if messages %}
+  <div style="margin-bottom: 1.25rem;">
+    {% for message in messages %}
+    <div class="alert-item notification-type-success" style="padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
+      <span style="font-size: 0.85rem; color: #fff;">{{ message }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="dashboard-section glass-card-glow">
+    <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border);">
+      <div class="user-avatar" style="width: 64px; height: 64px; font-size: 1.4rem; border-radius: 16px;">
+        <span>{{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}</span>
+      </div>
+      <div>
+        <h3 style="font-size: 1.3rem; font-weight: 800; color: #fff;">{{ user.first_name }} {{ user.last_name }}</h3>
+        <p style="color: var(--secondary-light); font-size: 0.85rem; font-weight: 600;">{{ user.email }}</p>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.4rem;">
+          <span class="badge badge-primary">{{ user.role }}</span>
+          <span class="badge badge-success">● {{ user.account_status|upper }}</span>
+        </div>
+      </div>
+    </div>
+
+    <form method="post" action="{% url 'profile' %}">
+      {% csrf_token %}
+
+      <div class="dashboard-grid-2col" style="gap: 1rem; margin-bottom: 1.25rem;">
+        <div>
+          <label for="id_first_name" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">First Name</label>
+          {{ form.first_name }}
+        </div>
+        <div>
+          <label for="id_last_name" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">Last Name</label>
+          {{ form.last_name }}
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label for="id_role" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">Operational Role / Desk</label>
+        {{ form.role }}
+      </div>
+
+      <div class="spec-list" style="margin: 1.5rem 0;">
+        <div class="spec-row">
+          <span class="spec-label">Username:</span>
+          <span class="spec-value">{{ user.username }}</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Account Created:</span>
+          <span class="spec-value">{{ user.created_date|date:"F d, Y H:i" }}</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Last Login:</span>
+          <span class="spec-value">{{ user.last_login|date:"F d, Y H:i"|default:"Active session" }}</span>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 1.5rem;">
+        <button type="submit" class="primary-btn">Save Profile Changes</button>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

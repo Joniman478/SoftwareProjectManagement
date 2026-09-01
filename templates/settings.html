@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}System Settings & Information | NCI-SCP{% endblock %}
+
+{% block content %}
+<section id="settings-view" class="view-panel">
+  <div class="view-header-flex">
+    <div>
+      <h2 class="view-title">System Settings & Project Information</h2>
+      <p class="view-subtitle">Configuration parameters, regulatory compliance frameworks, API specifications, and team credits.</p>
+    </div>
+  </div>
+
+  <div class="dashboard-grid-2col">
+    <!-- Project Specifications -->
+    <div class="dashboard-section glass-card-glow">
+      <h3>Project & Architecture Overview</h3>
+      <div class="spec-list">
+        <div class="spec-row">
+          <span class="spec-label">Project Name:</span>
+          <strong class="spec-value">National Car Import Supply Chain Platform (NCI-SCP)</strong>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Architecture:</span>
+          <span class="spec-value">Django Full-Stack MVC & REST API Pipeline</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Database Layer:</span>
+          <span class="spec-value">SQLite3 Relational DB (Django ORM)</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Security Engine:</span>
+          <span class="spec-value">SHA-256 Cryptographic Digest Verification</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Active Environment:</span>
+          <span class="badge badge-success">Production Ready (Development Server Active)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- API Endpoints Status -->
+    <div class="dashboard-section">
+      <h3>Active REST API Endpoints</h3>
+      <div class="api-endpoints-list">
+        <div class="api-endpoint-item">
+          <span class="badge badge-primary">GET</span>
+          <code>/api/dashboard/</code>
+          <span class="api-desc">Dashboard KPIs & Recent Consignments</span>
+        </div>
+        <div class="api-endpoint-item">
+          <span class="badge badge-primary">GET/POST</span>
+          <code>/api/shipments/</code>
+          <span class="api-desc">List, Filter & Create Consignments</span>
+        </div>
+        <div class="api-endpoint-item">
+          <span class="badge badge-warning">POST</span>
+          <code>/api/shipments/&lt;id&gt;/advance/</code>
+          <span class="api-desc">Advance Supply Chain Workflow</span>
+        </div>
+        <div class="api-endpoint-item">
+          <span class="badge badge-info">GET</span>
+          <code>/api/track/?q=...</code>
+          <span class="api-desc">Real-Time Tracking by VIN or ID</span>
+        </div>
+        <div class="api-endpoint-item">
+          <span class="badge badge-primary">GET/POST</span>
+          <code>/api/documents/</code>
+          <span class="api-desc">Document Registry & SHA-256 Hash</span>
+        </div>
+        <div class="api-endpoint-item">
+          <span class="badge badge-secondary">GET</span>
+          <code>/api/reports/export/</code>
+          <span class="api-desc">Export Summary in JSON or CSV</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid-2col" style="margin-top: 1.5rem;">
+    <!-- Ethiopian Import Regulatory Guidelines -->
+    <div class="dashboard-section">
+      <h3>Ethiopian Automotive Import Framework</h3>
+      <div class="sec-feature-item" style="margin-bottom: 0.8rem;">
+        <div class="sec-icon">📜</div>
+        <div>
+          <strong>Customs Proclamation No. 859/2014</strong>
+          <p>Governs valuation, tariff classification, physical inspections, and penalty schedules for undeclared items.</p>
+        </div>
+      </div>
+      <div class="sec-feature-item" style="margin-bottom: 0.8rem;">
+        <div class="sec-icon">⚡</div>
+        <div>
+          <strong>Electric Vehicle (EV) Incentive Policy</strong>
+          <p>Complete customs duty exemption and reduced VAT rates for fully electric passenger vehicles to foster green logistics.</p>
+        </div>
+      </div>
+      <div class="sec-feature-item">
+        <div class="sec-icon">🚆</div>
+        <div>
+          <strong>Multimodal Transport System (ESLSE)</strong>
+          <p>Mandatory through Bill of Lading from Port of Origin directly to Modjo/Kality Dry Ports via Ethio-Djibouti Railway.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Development Team Credits -->
+    <div class="dashboard-section glass-card-glow">
+      <h3>Project Development Team</h3>
+      <p class="text-subtle" style="margin-bottom: 1rem;">Software Project Management & Engineering Team Members:</p>
+
+      <div class="team-list">
+        <div class="team-member-item">
+          <div class="team-avatar">HM</div>
+          <div>
+            <strong>Habtewold Mazengiya</strong>
+            <span>ATE/5127/15</span>
+          </div>
+        </div>
+        <div class="team-member-item">
+          <div class="team-avatar">YB</div>
+          <div>
+            <strong>Yonathan Birhanu</strong>
+            <span>ATE/8681/15</span>
+          </div>
+        </div>
+        <div class="team-member-item">
+          <div class="team-avatar">YT</div>
+          <div>
+            <strong>Yonathan Tatek</strong>
+            <span>ATE/6955/15</span>
+          </div>
+        </div>
+        <div class="team-member-item">
+          <div class="team-avatar">FN</div>
+          <div>
+            <strong>Fitsume Nigusse</strong>
+            <span>ATE/4123/15</span>
+          </div>
+        </div>
+        <div class="team-member-item">
+          <div class="team-avatar">MT</div>
+          <div>
+            <strong>Mihretu Tesema</strong>
+            <span>ATE/1022/15</span>
+          </div>
+        </div>
+        <div class="team-member-item">
+          <div class="team-avatar">PK</div>
+          <div>
+            <strong>Peter Koru</strong>
+            <span>ATE/1191/15</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

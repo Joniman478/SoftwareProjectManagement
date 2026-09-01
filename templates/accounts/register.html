@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register Stakeholder Account | NCI-SCP{% endblock %}
+
+{% block content %}
+<section class="view-panel" style="max-width: 620px; margin: 2rem auto;">
+  <div class="dashboard-section glass-card-glow" style="padding: 2.5rem;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div class="brand-icon-wrapper" style="margin: 0 auto 1rem auto; width: 56px; height: 56px; border-radius: 16px;">
+        <svg viewBox="0 0 24 24" width="30" height="30" stroke="currentColor" fill="none" stroke-width="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff;">Register Stakeholder Entity</h2>
+      <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.25rem;">Authorized National Car Import Supply Chain Access</p>
+    </div>
+
+    {% if form.non_field_errors %}
+    <div style="margin-bottom: 1.25rem;">
+      {% for err in form.non_field_errors %}
+      <div class="alert-item notification-type-danger" style="padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
+        <span style="font-size: 0.85rem; color: #fff;">{{ err }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'register' %}">
+      {% csrf_token %}
+      
+      <div class="dashboard-grid-2col" style="gap: 1rem; margin-bottom: 1.25rem;">
+        <div>
+          <label for="id_first_name" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">First Name *</label>
+          {{ form.first_name }}
+          {% if form.first_name.errors %}
+          <div style="color: var(--danger); font-size: 0.78rem; margin-top: 0.2rem;">{{ form.first_name.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div>
+          <label for="id_last_name" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">Last Name *</label>
+          {{ form.last_name }}
+          {% if form.last_name.errors %}
+          <div style="color: var(--danger); font-size: 0.78rem; margin-top: 0.2rem;">{{ form.last_name.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label for="id_email" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">Official Corporate Email *</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+        <div style="color: var(--danger); font-size: 0.78rem; margin-top: 0.2rem;">{{ form.email.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label for="id_username" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">System Username / Officer Code *</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+        <div style="color: var(--danger); font-size: 0.78rem; margin-top: 0.2rem;">{{ form.username.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label for="id_role" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">Supply Chain Role / Authority *</label>
+        {{ form.role }}
+        {% if form.role.errors %}
+        <div style="color: var(--danger); font-size: 0.78rem; margin-top: 0.2rem;">{{ form.role.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="dashboard-grid-2col" style="gap: 1rem; margin-bottom: 1.5rem;">
+        <div>
+          <label for="id_password" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">Password *</label>
+          {{ form.password }}
+          {% if form.password.errors %}
+          <div style="color: var(--danger); font-size: 0.78rem; margin-top: 0.2rem;">{{ form.password.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div>
+          <label for="id_confirm_password" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">Confirm Password *</label>
+          {{ form.confirm_password }}
+          {% if form.confirm_password.errors %}
+          <div style="color: var(--danger); font-size: 0.78rem; margin-top: 0.2rem;">{{ form.confirm_password.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <button type="submit" class="primary-btn" style="width: 100%; justify-content: center; padding: 0.85rem; font-size: 0.95rem;">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        <span>Complete Registration</span>
+      </button>
+    </form>
+
+    <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--glass-border); text-align: center; font-size: 0.85rem; color: var(--text-muted);">
+      <span>Already have an authorized account? </span>
+      <a href="{% url 'login' %}" class="link-action" style="font-weight: 700; color: var(--secondary-light);">Sign In to Portal</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

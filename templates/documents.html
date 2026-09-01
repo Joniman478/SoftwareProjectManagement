@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Document Management & Verification | NCI-SCP{% endblock %}
+
+{% block content %}
+<section id="documents-view" class="view-panel">
+  <div class="view-header-flex">
+    <div>
+      <h2 class="view-title">Cryptographic Document Management</h2>
+      <p class="view-subtitle">Immutable SHA-256 document registry for Bill of Lading, Customs Declarations, and Bank Guarantees.</p>
+    </div>
+    <div class="view-header-actions">
+      <button class="primary-btn" onclick="openDocumentUpload()">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Upload & Hash Document</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Documents Table -->
+  <div class="dashboard-section">
+    <div class="section-heading-flex">
+      <div>
+        <h3>Verified Supply Chain Documents</h3>
+        <p class="text-subtle">All digital records verified against SHA-256 cryptographic fingerprints to prevent fraudulent clearance.</p>
+      </div>
+      <div class="search-input-wrapper">
+        <input type="text" id="documentTableSearch" placeholder="Search documents or hashes..." onkeyup="filterDocumentsTable(this.value)">
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table id="documentsTable">
+        <thead>
+          <tr>
+            <th>Document Title</th>
+            <th>Type</th>
+            <th>Related Consignment</th>
+            <th>SHA-256 Cryptographic Hash</th>
+            <th>Issuing Authority</th>
+            <th>File Size</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="documentTableBody">
+          {% for d in documents %}
+          <tr>
+            <td style="font-weight: 700; color: var(--text-main);">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--primary-light)" fill="none" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                <span>{{ d.title }}</span>
+              </div>
+            </td>
+            <td><span class="badge badge-info">{{ d.document_type }}</span></td>
+            <td><a href="javascript:void(0)" onclick="inspectShipment('{{ d.shipment.shipment_id }}')" class="link-action" style="font-weight: 600;">{{ d.shipment.shipment_id }}</a></td>
+            <td><code class="hash-code" title="{{ d.sha256_hash }}">{{ d.sha256_hash|slice:":16" }}...{{ d.sha256_hash|slice:"-8:" }}</code></td>
+            <td style="font-size: 0.82rem; color: var(--text-muted);">{{ d.uploaded_by }}</td>
+            <td style="font-size: 0.82rem; color: var(--text-dim);">{{ d.file_size }}</td>
+            <td>
+              <span class="badge {% if d.status == 'Verified' %}badge-success{% else %}badge-warning{% endif %}">
+                ✓ {{ d.status }}
+              </span>
+            </td>
+            <td>
+              <button class="table-btn" onclick="verifyDocumentIntegrity('{{ d.title }}', '{{ d.sha256_hash }}')">Verify Hash</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Live SHA-256 Cryptographic Playground / Tool -->
+  <div class="dashboard-grid-2col" style="margin-top: 1.5rem;">
+    <div class="dashboard-section glass-card-glow">
+      <div class="section-heading-flex">
+        <div>
+          <h3>Cryptographic SHA-256 Hash Tester</h3>
+          <p class="text-subtle">Generate standard 256-bit cryptographic digest from raw document text or certificate metadata.</p>
+        </div>
+      </div>
+
+      <label for="hashText" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Document Payload Content / Text:</label>
+      <textarea id="hashText" rows="4" placeholder="Enter document payload, e.g. Bill of Lading BL-ETH-2024-00984 Carrier: ESLSE Djibouti"></textarea>
+      
+      <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <button class="primary-btn" onclick="generateHash()">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span>Calculate Hash</span>
+        </button>
+        <button class="secondary-btn" onclick="copyHashToClipboard()">Copy Result</button>
+      </div>
+
+      <div style="margin-top: 1rem;">
+        <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Computed SHA-256 Digest:</span>
+        <div id="hashResult" class="hash-output-box">Click "Calculate Hash" to compute cryptographic fingerprint.</div>
+      </div>
+    </div>
+
+    <div class="dashboard-section">
+      <h3>Document Security in NCI-SCP</h3>
+      <div class="security-features-list">
+        <div class="sec-feature-item">
+          <div class="sec-icon">🔒</div>
+          <div>
+            <strong>Tamper-Proof Auditability</strong>
+            <p>Every Bill of Lading and Commercial Invoice is fingerprinted at issuance. Any tampering with duty values or VIN invalidates the signature.</p>
+          </div>
+        </div>
+        <div class="sec-feature-item">
+          <div class="sec-icon">⚡</div>
+          <div>
+            <strong>Instant Cross-Agency Verification</strong>
+            <p>Ethiopian Customs and Modjo Port officers instantly verify digital certificates against the registered SHA-256 ledger.</p>
+          </div>
+        </div>
+        <div class="sec-feature-item">
+          <div class="sec-icon">🏛️</div>
+          <div>
+            <strong>Regulatory Standard Compliance</strong>
+            <p>Compliant with Ethiopian Electronic Signature Proclamation No. 1072/2018 and ASYCUDA World electronic manifest standards.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

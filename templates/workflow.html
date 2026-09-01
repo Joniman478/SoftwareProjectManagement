@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Workflow Pipeline | NCI-SCP{% endblock %}
+
+{% block content %}
+<section id="workflow-view" class="view-panel">
+  <div class="view-header-flex">
+    <div>
+      <h2 class="view-title">Import Supply Chain Workflow Pipeline</h2>
+      <p class="view-subtitle">End-to-end multimodal vehicle tracking from origin port booking to final plate registration.</p>
+    </div>
+    <div class="view-header-actions">
+      <label for="workflowShipmentSelect" style="font-size: 0.85rem; color: var(--text-muted); align-self: center;">Select Shipment:</label>
+      <select id="workflowShipmentSelect" onchange="loadWorkflowForShipment(this.value)" style="background: rgba(10, 15, 29, 0.7); border: 1px solid var(--glass-border); color: #fff; padding: 0.6rem 1rem; border-radius: var(--radius-md);">
+        {% for s in shipments %}
+        <option value="{{ s.shipment_id }}">{{ s.shipment_id }} - {{ s.vehicle }} ({{ s.status }})</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <!-- Active Shipment Overview Banner -->
+  <div class="dashboard-section glass-card-glow" id="workflowBanner">
+    <div class="workflow-banner-content">
+      <div class="workflow-banner-vehicle">
+        <img id="wfVehicleImg" src="{{ shipments.0.image|default:'/static/images/land_cruiser.png' }}" alt="Vehicle" class="vehicle-img-large" onerror="this.src='/static/images/land_cruiser.png'">
+        <div>
+          <h3 id="wfVehicleTitle" style="font-size: 1.3rem; margin-bottom: 0.2rem;">{{ shipments.0.vehicle|default:"Toyota Land Cruiser 300" }}</h3>
+          <p id="wfVehicleSub" style="color: var(--text-muted); font-size: 0.85rem;">Shipment ID: <strong id="wfShipmentId" style="color: var(--secondary-light);">{{ shipments.0.shipment_id|default:"SHP-2024-001" }}</strong> | VIN: <code id="wfVin" class="vin-code">{{ shipments.0.vin|default:"JTMHV05J404981726" }}</code></p>
+        </div>
+      </div>
+      <div class="workflow-banner-metrics">
+        <div class="banner-stat">
+          <span class="stat-label">Current Stage</span>
+          <strong id="wfCurrentStatus" class="stat-val text-cyan">{{ shipments.0.status|default:"Customs Clearance" }}</strong>
+        </div>
+        <div class="banner-stat">
+          <span class="stat-label">Progress</span>
+          <strong id="wfProgressVal" class="stat-val text-purple">{{ shipments.0.progress|default:"68" }}%</strong>
+        </div>
+        <div class="banner-stat">
+          <span class="stat-label">Destination</span>
+          <strong id="wfDestination" class="stat-val">{{ shipments.0.destination|default:"Modjo Dry Port" }}</strong>
+        </div>
+        <div class="banner-stat">
+          <button class="primary-btn" onclick="advanceActiveWorkflowShipment()">Advance Stage</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stepper Indicator -->
+    <ol class="workflow" id="detailedWorkflowStepper" style="margin-top: 2rem;">
+      <li class="completed" id="wfStep0">
+        <span class="workflow-step-num">1</span>
+        <strong>1. Booking Confirmed</strong>
+        <span>Ocean Line Booking</span>
+      </li>
+      <li class="completed" id="wfStep1">
+        <span class="workflow-step-num">2</span>
+        <strong>2. In Transit</strong>
+        <span>Maritime Sea Voyage</span>
+      </li>
+      <li class="completed" id="wfStep2">
+        <span class="workflow-step-num">3</span>
+        <strong>3. Arrived at Port</strong>
+        <span>Djibouti / Modjo Rail</span>
+      </li>
+      <li class="active" id="wfStep3">
+        <span class="workflow-step-num">4</span>
+        <strong>4. Customs Clearance</strong>
+        <span>Inspection & Duty</span>
+      </li>
+      <li id="wfStep4">
+        <span class="workflow-step-num">5</span>
+        <strong>5. Released</strong>
+        <span>Bank Duty Settle</span>
+      </li>
+      <li id="wfStep5">
+        <span class="workflow-step-num">6</span>
+        <strong>6. Delivered</strong>
+        <span>Title & Plate Reg</span>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Stage Breakdown Cards -->
+  <div class="workflow-stages-grid">
+    <!-- Stage 1 -->
+    <div class="dashboard-section stage-card">
+      <div class="stage-header">
+        <div class="stage-number-badge">1</div>
+        <div>
+          <h4>Booking & Purchase Order</h4>
+          <span class="stage-actor">Actor: Importer & Maritime Shipping Line</span>
+        </div>
+      </div>
+      <p class="stage-text">Vehicle purchase confirmed at origin (Yokohama/Busan/Bremerhaven). Commercial invoice and electronic Bill of Lading generated.</p>
+      <div class="stage-checklist">
+        <div class="chk-item checked">✓ Proforma & Commercial Invoice</div>
+        <div class="chk-item checked">✓ Export Declaration Certificate</div>
+        <div class="chk-item checked">✓ Multimodal Bill of Lading (ESLSE)</div>
+      </div>
+    </div>
+
+    <!-- Stage 2 -->
+    <div class="dashboard-section stage-card">
+      <div class="stage-header">
+        <div class="stage-number-badge">2</div>
+        <div>
+          <h4>Ocean Transit & Red Sea Passage</h4>
+          <span class="stage-actor">Actor: Shipping Carrier & Forwarder</span>
+        </div>
+      </div>
+      <p class="stage-text">Container vessel navigates international sea lanes to the Port of Djibouti. Automatic AIS satellite telemetry monitoring.</p>
+      <div class="stage-checklist">
+        <div class="chk-item checked">✓ Electronic Sea Waybill</div>
+        <div class="chk-item checked">✓ Marine Cargo Insurance Policy</div>
+        <div class="chk-item checked">✓ Bank Foreign Exchange Approval</div>
+      </div>
+    </div>
+
+    <!-- Stage 3 -->
+    <div class="dashboard-section stage-card">
+      <div class="stage-header">
+        <div class="stage-number-badge">3</div>
+        <div>
+          <h4>Djibouti Port Discharge & Rail Transit</h4>
+          <span class="stage-actor">Actor: Port Authority & Ethio-Djibouti Railway</span>
+        </div>
+      </div>
+      <p class="stage-text">Container offloaded at Djibouti container terminal and transferred via electrified railway directly to inland dry ports (Modjo/Kality).</p>
+      <div class="stage-checklist">
+        <div class="chk-item checked">✓ Port Discharge Tally Sheet</div>
+        <div class="chk-item checked">✓ Railway Waybill (EDR Manifest)</div>
+        <div class="chk-item checked">✓ Bonded Transit Guarantee</div>
+      </div>
+    </div>
+
+    <!-- Stage 4 -->
+    <div class="dashboard-section stage-card active-stage-highlight">
+      <div class="stage-header">
+        <div class="stage-number-badge pulse-badge">4</div>
+        <div>
+          <h4>ASYCUDA Customs & Duty Assessment</h4>
+          <span class="stage-actor">Actor: Ethiopian Customs Commission (ECC)</span>
+        </div>
+      </div>
+      <p class="stage-text">Physical cargo inspection at Modjo Dry Port. Valuation assessment under Customs Proclamation and tariff classification.</p>
+      <div class="stage-checklist">
+        <div class="chk-item checked">✓ ASYCUDA World Declaration</div>
+        <div class="chk-item checked">✓ Physical Inspection Report</div>
+        <div class="chk-item pending">⏳ Duty Assessment Payment Notice</div>
+      </div>
+    </div>
+
+    <!-- Stage 5 -->
+    <div class="dashboard-section stage-card">
+      <div class="stage-header">
+        <div class="stage-number-badge">5</div>
+        <div>
+          <h4>Bank Settlement & Customs Release</h4>
+          <span class="stage-actor">Actor: Commercial Bank & Customs Cashier</span>
+        </div>
+      </div>
+      <p class="stage-text">Customs duty settled via Commercial Bank of Ethiopia (CBE Birr / Core Banking). Official Customs Release Order generated.</p>
+      <div class="stage-checklist">
+        <div class="chk-item pending">⏳ Bank Duty Payment Confirmation</div>
+        <div class="chk-item pending">⏳ Electronic Customs Release Note</div>
+        <div class="chk-item pending">⏳ Dry Port Gate Pass</div>
+      </div>
+    </div>
+
+    <!-- Stage 6 -->
+    <div class="dashboard-section stage-card">
+      <div class="stage-header">
+        <div class="stage-number-badge">6</div>
+        <div>
+          <h4>Registration & Final Delivery</h4>
+          <span class="stage-actor">Actor: Ministry of Transport & Logistics (MoTL)</span>
+        </div>
+      </div>
+      <p class="stage-text">VIN registration, technical inspection certificate, plate number allocation, and legal ownership title deed issuance.</p>
+      <div class="stage-checklist">
+        <div class="chk-item pending">⏳ Vehicle Technical Roadworthiness</div>
+        <div class="chk-item pending">⏳ National Title & Registration Deed</div>
+        <div class="chk-item pending">⏳ Importer Final Consignment Handover</div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

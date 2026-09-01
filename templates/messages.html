@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inter-Stakeholder Messages | NCI-SCP{% endblock %}
+
+{% block content %}
+<section id="messages-view" class="view-panel">
+  <div class="view-header-flex">
+    <div>
+      <h2 class="view-title">Inter-Agency Communications</h2>
+      <p class="view-subtitle">Direct official messaging between Importers, Customs Officers, Port Terminal Managers, and Banks.</p>
+    </div>
+    <div class="view-header-actions">
+      <button class="primary-btn" onclick="openComposeMessageModal()">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>+ Compose Message</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="dashboard-grid-2col">
+    <!-- Messages Feed -->
+    <div class="dashboard-section" style="height: fit-content;">
+      <div class="section-heading-flex">
+        <h3>Official Communications Inbox</h3>
+        <span class="badge badge-primary">{{ messages.count }} Messages</span>
+      </div>
+
+      <div id="messagesFeedList" class="messages-feed-container">
+        {% for m in messages %}
+        <div class="message-card">
+          <div class="message-header-flex">
+            <div>
+              <strong class="message-sender-name">{{ m.sender }}</strong>
+              <span class="badge badge-info message-role-pill">{{ m.sender_role }}</span>
+            </div>
+            <span class="message-timestamp">{{ m.created_at|date:"M d, Y H:i" }}</span>
+          </div>
+          
+          <h4 class="message-subject-title">{{ m.subject }}</h4>
+          <p class="message-body-text">{{ m.body }}</p>
+
+          <div class="message-footer-meta">
+            <span style="font-size: 0.75rem; color: var(--text-dim);">To: <strong>{{ m.recipient }}</strong></span>
+            {% if m.shipment %}
+            <a href="javascript:void(0)" onclick="inspectShipment('{{ m.shipment.shipment_id }}')" class="link-action" style="font-size: 0.75rem;">Ref: {{ m.shipment.shipment_id }}</a>
+            {% endif %}
+          </div>
+        </div>
+        {% empty %}
+        <div class="track-placeholder-state">
+          <p>No messages recorded yet.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Quick Message Sender Form -->
+    <div class="dashboard-section glass-card-glow">
+      <h3>Quick Dispatch Notice</h3>
+      <p class="text-subtle" style="margin-bottom: 1.25rem;">Broadcast inquiry or clearance release request directly to regulatory desks.</p>
+
+      <form onsubmit="handleInlineSendMessage(event)" class="inline-msg-form">
+        <label for="inlineRecipient">Target Stakeholder Authority</label>
+        <select id="inlineRecipient">
+          <option value="Ethiopian Customs Commission">Ethiopian Customs Commission</option>
+          <option value="Modjo Dry Port Logistics">Modjo Dry Port Logistics</option>
+          <option value="Commercial Bank of Ethiopia">Commercial Bank of Ethiopia</option>
+          <option value="Ethiopian Maritime Authority">Ethiopian Maritime Authority</option>
+          <option value="GT Motors Ltd. (Importer)">GT Motors Ltd. (Importer)</option>
+          <option value="Ministry of Transport & Logistics">Ministry of Transport & Logistics</option>
+        </select>
+
+        <label for="inlineShipmentSelect">Associated Shipment Consignment</label>
+        <select id="inlineShipmentSelect">
+          <option value="">-- General Inflow / Non-Shipment Specific --</option>
+          {% for s in shipments %}
+          <option value="{{ s.shipment_id }}">{{ s.shipment_id }} - {{ s.vehicle }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="inlineSubject">Subject Heading</label>
+        <input type="text" id="inlineSubject" placeholder="e.g. Physical Inspection Clearance Request" required>
+
+        <label for="inlineBody">Message Body</label>
+        <textarea id="inlineBody" rows="5" placeholder="Specify requirements, declaration numbers, or consignment details..." required></textarea>
+
+        <button type="submit" class="primary-btn" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          <span>Transmit Official Message</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

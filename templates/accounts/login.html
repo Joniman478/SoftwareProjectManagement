@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign In | NCI-SCP National Supply Chain Platform{% endblock %}
+
+{% block content %}
+<section class="view-panel" style="max-width: 540px; margin: 2rem auto;">
+  <div class="dashboard-section glass-card-glow" style="padding: 2.5rem;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div class="brand-icon-wrapper" style="margin: 0 auto 1rem auto; width: 56px; height: 56px; border-radius: 16px;">
+        <svg viewBox="0 0 24 24" width="30" height="30" stroke="currentColor" fill="none" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff;">Portal Sign In</h2>
+      <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.25rem;">National Car Import Supply Chain Platform (NCI-SCP)</p>
+    </div>
+
+    {% if messages %}
+    <div style="margin-bottom: 1.25rem;">
+      {% for message in messages %}
+      <div class="alert-item notification-type-{{ message.tags }}" style="padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
+        <span style="font-size: 0.85rem; color: #fff;">{{ message }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      
+      <div style="margin-bottom: 1.25rem;">
+        <label for="id_username" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">Corporate / Authority Email *</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+        <div style="color: var(--danger); font-size: 0.78rem; margin-top: 0.2rem;">{{ form.username.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <label for="id_password" style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600;">Password *</label>
+        {{ form.password }}
+        {% if form.password.errors %}
+        <div style="color: var(--danger); font-size: 0.78rem; margin-top: 0.2rem;">{{ form.password.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="primary-btn" style="width: 100%; justify-content: center; padding: 0.85rem; font-size: 0.95rem;">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+        <span>Authenticate & Access Portal</span>
+      </button>
+    </form>
+
+    <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--glass-border); text-align: center; font-size: 0.85rem; color: var(--text-muted);">
+      <span>New stakeholder organization? </span>
+      <a href="{% url 'register' %}" class="link-action" style="font-weight: 700; color: var(--secondary-light);">Register Authorized Account</a>
+    </div>
+
+    <!-- Quick Demo Accounts Switcher -->
+    <div style="margin-top: 1.5rem; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 1rem;">
+      <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Demo Stakeholder Credentials</span>
+      <div style="display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.6rem; font-size: 0.78rem;">
+        <div style="display: flex; justify-content: space-between; color: var(--text-dim);">
+          <span>Importer (GT Motors):</span>
+          <code style="color: var(--secondary-light);">importer@gtmotors.et / Pass1234</code>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: var(--text-dim);">
+          <span>Customs Officer (ECC):</span>
+          <code style="color: var(--secondary-light);">customs@ecc.gov.et / Pass1234</code>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: var(--text-dim);">
+          <span>Port Operator (Modjo):</span>
+          <code style="color: var(--secondary-light);">port@modjoport.et / Pass1234</code>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: var(--text-dim);">
+          <span>Bank Official (CBE):</span>
+          <code style="color: var(--secondary-light);">bank@cbe.com.et / Pass1234</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

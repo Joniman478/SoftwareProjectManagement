@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}System Alerts & Notifications | NCI-SCP{% endblock %}
+
+{% block content %}
+<section id="notifications-view" class="view-panel">
+  <div class="view-header-flex">
+    <div>
+      <h2 class="view-title">Alerts & System Notifications</h2>
+      <p class="view-subtitle">Real-time alerts regarding vessel arrival, customs holds, duty calculations, and document expirations.</p>
+    </div>
+    <div class="view-header-actions">
+      <button class="secondary-btn" onclick="markAllNotificationsRead()">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Mark All as Read</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="filter-toolbar">
+    <div class="filter-pill-group">
+      <button class="filter-pill active" onclick="filterNotificationType('all', this)">All ({{ notifications.count }})</button>
+      <button class="filter-pill" onclick="filterNotificationType('danger', this)">Critical & Holds</button>
+      <button class="filter-pill" onclick="filterNotificationType('warning', this)">Payment & Duty</button>
+      <button class="filter-pill" onclick="filterNotificationType('info', this)">Milestones</button>
+    </div>
+  </div>
+
+  <div class="dashboard-section">
+    <div id="fullNotificationList" class="notification-full-list">
+      {% for n in notifications %}
+      <div class="alert-item notification-row notification-type-{{ n.notification_type }} {% if not n.is_read %}unread{% endif %}" data-type="{{ n.notification_type }}">
+        <div class="alert-badge-icon {{ n.notification_type }}">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <div class="alert-content">
+          <div class="alert-title-flex">
+            <h4 class="alert-title">{{ n.title }}</h4>
+            <span class="alert-time">{{ n.time_label }}</span>
+          </div>
+          <p class="alert-desc">{{ n.description }}</p>
+          {% if n.shipment %}
+          <div class="alert-meta-shipment">
+            <span>Consignment Ref:</span>
+            <a href="javascript:void(0)" onclick="inspectShipment('{{ n.shipment.shipment_id }}')" class="link-action">{{ n.shipment.shipment_id }} ({{ n.shipment.vehicle }})</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <div class="track-placeholder-state">
+        <p>No active notifications at this time.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

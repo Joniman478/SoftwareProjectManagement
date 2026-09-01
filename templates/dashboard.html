@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | NCI-SCP National Supply Chain Platform{% endblock %}
+
+{% block content %}
+<section id="dashboard-view" class="view-panel">
+  <div class="view-header-flex">
+    <div>
+      <h2 class="view-title">Import Operations Dashboard</h2>
+      <p class="view-subtitle">Live overview of maritime arrivals, customs clearances, and dry port transit.</p>
+    </div>
+    <div class="view-header-actions">
+      <button class="primary-btn" onclick="openNewShipment()">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>New Shipment</span>
+      </button>
+      <button class="secondary-btn" onclick="openDocumentUpload()">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Upload Document</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Metric Cards -->
+  <div class="cards">
+    <div class="card card-purple">
+      <div class="card-top">
+        <h3>Total Active Shipments</h3>
+        <span class="card-icon-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="#a855f7" fill="none" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+        </span>
+      </div>
+      <p class="number" id="kpiTotalShipments">{{ kpi_total_shipments|default:"5" }}</p>
+      <div class="card-footer">
+        <span class="trend-up">↑ +14.2%</span>
+        <span>vs. last month</span>
+      </div>
+    </div>
+
+    <div class="card card-cyan">
+      <div class="card-top">
+        <h3>In Transit (Maritime)</h3>
+        <span class="card-icon-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="#06b6d4" fill="none" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        </span>
+      </div>
+      <p class="number" id="kpiInTransit">{{ kpi_in_transit|default:"2" }}</p>
+      <div class="card-footer">
+        <span class="trend-neutral">● On Schedule</span>
+        <span>Red Sea & Djibouti</span>
+      </div>
+    </div>
+
+    <div class="card card-emerald">
+      <div class="card-top">
+        <h3>Cleared & Released</h3>
+        <span class="card-icon-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="#10b981" fill="none" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        </span>
+      </div>
+      <p class="number" id="kpiCleared">{{ kpi_cleared|default:"3" }}</p>
+      <div class="card-footer">
+        <span class="trend-up">↑ +8.5%</span>
+        <span>Modjo & Kality Ports</span>
+      </div>
+    </div>
+
+    <div class="card card-amber">
+      <div class="card-top">
+        <h3>Pending Actions / Duty</h3>
+        <span class="card-icon-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="#f59e0b" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </span>
+      </div>
+      <p class="number" id="kpiPendingActions">{{ kpi_pending_actions|default:"2" }}</p>
+      <div class="card-footer">
+        <span class="trend-warning">Requires Review</span>
+        <span>Duty & L/C Validation</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Workflow Pipeline Stepper -->
+  <div class="dashboard-section glass-card-glow">
+    <div class="section-heading-flex">
+      <div>
+        <h3>National Import Supply Chain Pipeline</h3>
+        <p class="text-subtle">Standard 6-stage multimodal import process from Yokohama/Busan to Addis Ababa.</p>
+      </div>
+      <span class="badge badge-primary">Standard Multimodal Flow</span>
+    </div>
+
+    <ol class="workflow" id="workflowStepper">
+      <li class="completed" onclick="selectWorkflowStep(0)">
+        <span class="workflow-step-num">1</span>
+        <strong>Booking Confirmed</strong>
+        <span>May 01, 2024</span>
+      </li>
+      <li class="completed" onclick="selectWorkflowStep(1)">
+        <span class="workflow-step-num">2</span>
+        <strong>In Transit</strong>
+        <span>May 05, 2024</span>
+      </li>
+      <li class="completed" onclick="selectWorkflowStep(2)">
+        <span class="workflow-step-num">3</span>
+        <strong>Arrived at Port</strong>
+        <span>May 12, 2024</span>
+      </li>
+      <li class="active" onclick="selectWorkflowStep(3)">
+        <span class="workflow-step-num">4</span>
+        <strong>Customs Clearance</strong>
+        <span>In Progress</span>
+      </li>
+      <li onclick="selectWorkflowStep(4)">
+        <span class="workflow-step-num">5</span>
+        <strong>Released</strong>
+        <span>Duty Settlement</span>
+      </li>
+      <li onclick="selectWorkflowStep(5)">
+        <span class="workflow-step-num">6</span>
+        <strong>Delivered</strong>
+        <span>Plate & Registration</span>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Grid: Analytics Chart & Alerts Feed -->
+  <div class="dashboard-grid-2col">
+    <!-- SVG Interactive Chart -->
+    <div class="dashboard-section">
+      <div class="section-heading-flex">
+        <div>
+          <h3>Monthly Import Volume & Customs Velocity</h3>
+          <p class="text-subtle">Weekly clearance volume and average dwell time in days.</p>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot dot-purple"></span> Import Volume</span>
+          <span class="legend-item"><span class="legend-dot dot-cyan"></span> Target Velocity</span>
+        </div>
+      </div>
+      <div id="svgChartWrapper" class="chart-wrapper">
+        <!-- SVG rendered via JavaScript -->
+      </div>
+    </div>
+
+    <!-- Alerts & Tasks Widget -->
+    <div class="dashboard-section">
+      <div class="section-heading-flex">
+        <h3>Urgent Alerts & Notifications</h3>
+        <a href="{% url 'notifications' %}" class="link-action">View all</a>
+      </div>
+      <div id="dashboardAlertList" class="alert-list-scroll">
+        {% for n in notifications|slice:":4" %}
+        <div class="alert alert-{{ n.notification_type }}">
+          <div class="alert-content-wrapper">
+            <div class="alert-title">{{ n.title }}</div>
+            <p class="alert-desc">{{ n.description }}</p>
+          </div>
+          <span class="alert-time">{{ n.time_label }}</span>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">
+          <div class="alert-title">All Systems Operational</div>
+          <p class="alert-desc">No urgent customs or shipment holds detected today.</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">Action Checklist</h4>
+        <div class="task-list">
+          <label class="task">
+            <input type="checkbox" onchange="toggleTask(this)">
+            <span>Verify Commercial Invoice for SHP-2024-001</span>
+            <span class="task-badge badge-danger">Overdue</span>
+          </label>
+          <label class="task">
+            <input type="checkbox" onchange="toggleTask(this)">
+            <span>Submit Letter of Credit to Commercial Bank of Ethiopia</span>
+            <span class="task-badge badge-warning">Due in 1 day</span>
+          </label>
+          <label class="task">
+            <input type="checkbox" onchange="toggleTask(this)">
+            <span>Schedule Modjo Dry Port bay inspection</span>
+            <span class="task-badge badge-info">Due in 3 days</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Shipments Table -->
+  <div class="dashboard-section">
+    <div class="section-heading-flex">
+      <div>
+        <h3>Recent Vehicle Import Shipments</h3>
+        <p class="text-subtle">Active consignments tracked via electronic bill of lading and ASYCUDA customs.</p>
+      </div>
+      <div class="actions">
+        <button class="secondary-btn" onclick="trackShipment()">
+          <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>Track VIN</span>
+        </button>
+        <a href="{% url 'shipments' %}" class="primary-btn" style="text-decoration: none;">
+          <span>View All Shipments</span>
+          <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Shipment ID</th>
+            <th>Vehicle</th>
+            <th>VIN / Chassis</th>
+            <th>Destination Port</th>
+            <th>Status</th>
+            <th>ETA</th>
+            <th>Progress</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="recentShipmentsTableBody">
+          {% for s in recent_shipments %}
+          <tr onclick="inspectShipment('{{ s.shipment_id }}')" style="cursor: pointer;">
+            <td class="shipment-id">{{ s.shipment_id }}</td>
+            <td>
+              <div class="vehicle-cell">
+                <img src="{{ s.image }}" alt="{{ s.vehicle }}" class="vehicle-img-thumb" onerror="this.src='/static/images/land_cruiser.png'">
+                <div>
+                  <div style="font-weight: 700;">{{ s.vehicle }}</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">{{ s.importer_name }}</div>
+                </div>
+              </div>
+            </td>
+            <td><code class="vin-code">{{ s.vin }}</code></td>
+            <td style="font-size: 0.84rem; color: var(--text-muted);">{{ s.destination }}</td>
+            <td>
+              <span class="badge {% if s.status == 'Booking Confirmed' %}badge-warning{% elif s.status == 'In Transit' %}badge-secondary{% elif s.status == 'Arrived at Port' %}badge-info{% elif s.status == 'Customs Clearance' %}badge-primary{% else %}badge-success{% endif %}">
+                {{ s.status }}
+              </span>
+            </td>
+            <td style="font-size: 0.84rem; color: var(--text-muted);">{{ s.eta|date:"M d, Y"|default:"TBD" }}</td>
+            <td>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: {{ s.progress }}%;"></div>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-dim);">{{ s.progress }}%</span>
+            </td>
+            <td>
+              <button class="table-btn" onclick="event.stopPropagation(); inspectShipment('{{ s.shipment_id }}')">Inspect</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

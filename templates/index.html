@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NCI-SCP | National Car Import Supply Chain Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <aside class="sidebar">
+      <h1>NCI-SCP</h1>
+      <p>National Car Import Supply Chain Platform</p>
+
+      <nav>
+        <a href="#dashboard" class="nav-item active" data-tab="dashboard">Dashboard</a>
+        <a href="#shipments" class="nav-item" data-tab="shipments">Shipments</a>
+        <a href="#workflow" class="nav-item" data-tab="workflow">Workflow</a>
+        <a href="#documents" class="nav-item" data-tab="documents">Documents</a>
+        <a href="#stakeholders" class="nav-item" data-tab="stakeholders">Stakeholders</a>
+        <a href="#notifications" class="nav-item" data-tab="notifications">Notifications</a>
+        <a href="#reports" class="nav-item" data-tab="reports">Reports</a>
+        <a href="#messages" class="nav-item" data-tab="messages">Messages</a>
+        <a href="#audit" class="nav-item" data-tab="audit">Audit Trail</a>
+        <a href="#settings" class="nav-item" data-tab="settings">Settings</a>
+      </nav>
+
+      <div class="user">
+        <strong id="userNameLabel">System User</strong>
+        <p id="userRoleLabel">Importer</p>
+      </div>
+    </aside>
+
+    <main>
+
+      <header>
+        <div>
+          <h2>Welcome back, <span id="headerGreetingName">User</span>!</h2>
+          <p>Here's what's happening in your import supply chain today.</p>
+        </div>
+
+        <div class="header-tools">
+          <input type="text" id="search" placeholder="Search shipments..." onkeyup="filterShipments(this.value)">
+
+          <select id="userRole" onchange="switchRole(this.value)">
+            <option value="importer">Importer</option>
+            <option value="customs">Customs Officer</option>
+            <option value="port">Port Operator</option>
+            <option value="forwarder">Freight Forwarder</option>
+            <option value="bank">Bank Official</option>
+            <option value="registration">Registration Officer</option>
+            <option value="admin">System Administrator</option>
+          </select>
+
+          <span id="currentDate">May 15, 2024</span>
+        </div>
+      </header>
+
+      <section id="dashboard" class="tab-content active">
+        <h2>Dashboard</h2>
+
+        <div class="cards">
+          <div class="card">
+            <h3>Total Shipments</h3>
+            <p class="number" id="kpiTotalShipments">24</p>
+            <p>12% from last month</p>
+          </div>
+
+          <div class="card">
+            <h3>In Transit</h3>
+            <p class="number" id="kpiInTransit">8</p>
+            <p>Active shipments</p>
+          </div>
+
+          <div class="card">
+            <h3>Cleared</h3>
+            <p class="number" id="kpiCleared">10</p>
+            <p>This month</p>
+          </div>
+
+          <div class="card">
+            <h3>Pending Actions</h3>
+            <p class="number" id="kpiPendingActions">6</p>
+            <p>Requires your attention</p>
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Import Workflow Progress</h3>
+          <ol class="workflow" id="workflowStepper">
+            <li class="completed" onclick="selectWorkflowStep(0)">
+              <strong>Booking Confirmed</strong>
+              <span>May 01, 2024</span>
+            </li>
+            <li class="completed" onclick="selectWorkflowStep(1)">
+              <strong>In Transit</strong>
+              <span>May 05, 2024</span>
+            </li>
+            <li class="completed" onclick="selectWorkflowStep(2)">
+              <strong>Arrived at Port</strong>
+              <span>May 12, 2024</span>
+            </li>
+            <li class="active" onclick="selectWorkflowStep(3)">
+              <strong>Customs Clearance</strong>
+              <span>In Progress</span>
+            </li>
+            <li onclick="selectWorkflowStep(4)">
+              <strong>Released</strong>
+              <span>Upcoming</span>
+            </li>
+            <li onclick="selectWorkflowStep(5)">
+              <strong>Delivered</strong>
+              <span>Upcoming</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Alerts & Notifications</h3>
+          <div id="dashboardAlertList">
+            <div class="alert">
+              <strong>Document Expiring Soon</strong>
+              <p>Bill of Lading for shipment SHP-2024-001 expires in 2 days.</p>
+            </div>
+            <div class="alert">
+              <strong>Payment Pending</strong>
+              <p>Bank guarantee for shipment SHP-2024-003 requires action.</p>
+            </div>
+            <div class="alert">
+              <strong>Customs Inspection Scheduled</strong>
+              <p>Inspection for SHP-2024-002 is scheduled for May 18, 2024.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Recent Shipments</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Shipment ID</th>
+                <th>Vehicle</th>
+                <th>Status</th>
+                <th>ETA</th>
+              </tr>
+            </thead>
+            <tbody id="recentShipmentsTableBody">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Quick Actions</h3>
+          <div class="actions">
+            <button onclick="openNewShipment()">New Shipment</button>
+            <button onclick="openDocumentUpload()">Upload Document</button>
+            <button onclick="trackShipment()">Track Shipment</button>
+            <button onclick="createRequest()">Create Request</button>
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>My Tasks</h3>
+          <label class="task">
+            <input type="checkbox" onchange="toggleTask(this)">
+            Submit Commercial Invoice
+            <span>Overdue</span>
+          </label>
+          <label class="task">
+            <input type="checkbox" onchange="toggleTask(this)">
+            Provide Insurance Certificate
+            <span>Due in 1 day</span>
+          </label>
+          <label class="task">
+            <input type="checkbox" onchange="toggleTask(this)">
+            Confirm Delivery Address
+            <span>Due in 3 days</span>
+          </label>
+        </div>
+      </section>
+
+      <section id="shipments" class="tab-content">
+        <h2>Shipments</h2>
+        <button onclick="openNewShipment()" style="align-self: flex-start; margin-bottom: 1rem;">
+          + New Shipment
+        </button>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Shipment ID</th>
+              <th>Vehicle</th>
+              <th>VIN / Chassis</th>
+              <th>Origin</th>
+              <th>Status</th>
+              <th>ETA</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="fullShipmentsTableBody">
+          </tbody>
+        </table>
+      </section>
+
+      <section id="workflow" class="tab-content">
+        <h2>Workflow Tracking</h2>
+        <p style="color: var(--text-muted);">
+          Track the vehicle import process from booking to final delivery.
+        </p>
+
+        <div class="dashboard-section">
+          <ol class="workflow">
+            <li class="completed">
+              <strong>Booking Confirmed</strong>
+              <p>Completed - May 01, 2024</p>
+            </li>
+            <li class="completed">
+              <strong>In Transit</strong>
+              <p>Completed - May 05, 2024</p>
+            </li>
+            <li class="completed">
+              <strong>Arrived at Port</strong>
+              <p>Completed - May 12, 2024</p>
+            </li>
+            <li class="active">
+              <strong>Customs Clearance</strong>
+              <p>Currently in progress</p>
+            </li>
+            <li>
+              <strong>Released</strong>
+              <p>Waiting</p>
+            </li>
+            <li>
+              <strong>Delivered</strong>
+              <p>Waiting</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="documents" class="tab-content">
+        <h2>Documents</h2>
+        <p style="color: var(--text-muted);">
+          Documents can be uploaded and verified using cryptographic SHA-256 hashing.
+        </p>
+
+        <button onclick="openDocumentUpload()" style="align-self: flex-start; margin-bottom: 1rem;">
+          Upload Document
+        </button>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Document</th>
+              <th>Type</th>
+              <th>SHA-256 Hash</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="documentTableBody">
+          </tbody>
+        </table>
+
+        <div class="dashboard-section" style="margin-top: 1.5rem;">
+          <h3>SHA-256 Hash Tester</h3>
+          <label for="hashText">Enter document text:</label>
+          <textarea id="hashText" rows="4" placeholder="Enter text here..."></textarea>
+          <button onclick="generateHash()">Generate Hash</button>
+          <p style="margin-top: 1rem; color: var(--text-muted);">Hash result:</p>
+          <div id="hashResult">No hash generated yet.</div>
+        </div>
+      </section>
+
+      <section id="stakeholders" class="tab-content">
+        <h2>Stakeholders</h2>
+        <div class="cards">
+          <div class="card">
+            <h3>GT Motors Ltd.</h3>
+            <p>Importer / Dealer</p>
+            <p>Primary Vehicle Importer</p>
+          </div>
+          <div class="card">
+            <h3>Ethiopian Customs Commission</h3>
+            <p>Customs Authority</p>
+            <p>Inspection and Duty Assessment</p>
+          </div>
+          <div class="card">
+            <h3>Modjo Dry Port</h3>
+            <p>Port Operator</p>
+            <p>Container Offloading and Storage</p>
+          </div>
+          <div class="card">
+            <h3>Commercial Bank of Ethiopia</h3>
+            <p>Financial Institution</p>
+            <p>Letter of Credit and Payment</p>
+          </div>
+          <div class="card">
+            <h3>Ethiopian Maritime Authority</h3>
+            <p>Freight Shipping</p>
+            <p>Bill of Lading and Tracking</p>
+          </div>
+          <div class="card">
+            <h3>Ministry of Transport and Logistics</h3>
+            <p>Vehicle Registration</p>
+            <p>VIN and Title Registration</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="notifications" class="tab-content">
+        <h2>Notifications</h2>
+        <div id="fullNotificationList">
+        </div>
+      </section>
+
+      <section id="reports" class="tab-content">
+        <h2>Reports & Analytics</h2>
+        <div class="cards">
+          <div class="card">
+            <h3>Total Vehicle Imports</h3>
+            <p class="number">142</p>
+            <p>Vehicles imported in 2024</p>
+          </div>
+          <div class="card">
+            <h3>Average Clearance Time</h3>
+            <p class="number">4.2 Days</p>
+            <p>18% improvement</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="messages" class="tab-content">
+        <h2>Messages</h2>
+        <p style="color: var(--text-muted);">Communicate with customs officers, banks and port operators.</p>
+        <div class="message">
+          <strong>Customs Officer - Modjo Port</strong>
+          <p>Shipment SHP-2024-001 physical inspection is complete. Awaiting duty guarantee confirmation.</p>
+        </div>
+      </section>
+
+      <section id="audit" class="tab-content">
+        <h2>Audit Trail</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>User</th>
+              <th>Action</th>
+              <th>Shipment</th>
+              <th>SHA-256 Digest</th>
+            </tr>
+          </thead>
+          <tbody id="auditTrailTableBody">
+          </tbody>
+        </table>
+      </section>
+
+      <section id="settings" class="tab-content">
+        <h2>Settings</h2>
+        <div class="dashboard-section">
+          <h3>Project Information</h3>
+          <p><strong>Project Name:</strong> National Car Import Supply Chain Management Platform</p>
+          <p><strong>Backend API Target:</strong> Django REST API Framework (`http://127.0.0.1:8000/api`)</p>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Development Team</h3>
+          <ol style="margin-left: 1.25rem; color: var(--text-muted);">
+            <li>Operations Team</li>
+            <li>Habtewold Mazengiya (ATE/5127/15)</li>
+            <li>Yonathan Birhanu (ATE/8681/15)</li>
+            <li>Yonathan Tatek (ATE/6955/15)</li>
+            <li>Fitsume Nigusse (ATE/4123/15)</li>
+            <li>Mihretu Tesema (ATE/1022/15)</li>
+            <li>Peter Koru (ATE/1191/15)</li>
+          </ol>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <div id="newShipmentForm" class="modal">
+    <div class="modal-content">
+      <h2>Create New Shipment</h2>
+      <form onsubmit="handleNewShipment(event)">
+        <label for="vehicle">Vehicle Model / Make</label>
+        <input type="text" id="vehicle" placeholder="Example: Toyota Land Cruiser 2024" required>
+
+        <label for="vin">VIN / Chassis Number</label>
+        <input type="text" id="vin" placeholder="Enter VIN number" required>
+
+        <label for="port">Port of Origin</label>
+        <input type="text" id="port" placeholder="Example: Port of Yokohama / Djibouti" required>
+
+        <label for="eta">Estimated Arrival Date</label>
+        <input type="date" id="eta" required>
+
+        <button type="submit">Submit Shipment</button>
+        <button type="button" onclick="closeNewShipment()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="documentUploadForm" class="modal">
+    <div class="modal-content">
+      <h2>Upload Document</h2>
+      <form onsubmit="handleUploadDoc(event)">
+        <label for="documentTitle">Document Title</label>
+        <input type="text" id="documentTitle" placeholder="Commercial Invoice SHP-2024-001" required>
+
+        <label for="documentType">Document Type</label>
+        <select id="documentType">
+          <option value="Bill of Lading">Bill of Lading</option>
+          <option value="Commercial Invoice">Commercial Invoice</option>
+          <option value="Customs Declaration">Customs Declaration</option>
+          <option value="Bank Guarantee">Bank Guarantee</option>
+          <option value="Insurance Certificate">Insurance Certificate</option>
+        </select>
+
+        <label for="documentFile">Select File</label>
+        <input type="file" id="documentFile" required>
+
+        <button type="submit">Upload Document</button>
+        <button type="button" onclick="closeDocumentUpload()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="trackShipmentModal" class="modal">
+    <div class="modal-content">
+      <h2>Track Shipment</h2>
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <label for="trackSearchInput">Enter Shipment ID or VIN Number:</label>
+        <input type="text" id="trackSearchInput" placeholder="Example: SHP-2024-001 or JTMHV05J..." onkeyup="if(event.key === 'Enter') executeTrackSearch()">
+        <button type="button" onclick="executeTrackSearch()">Search Status</button>
+        <div id="trackResultBox" style="margin-top: 0.5rem;"></div>
+        <button type="button" onclick="closeModal('trackShipmentModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="genericAlertModal" class="modal">
+    <div class="modal-content">
+      <h2 id="genericAlertTitle">Notification Details</h2>
+      <p id="genericAlertMessage" style="color: var(--text-muted); margin-bottom: 1.5rem; white-space: pre-line;"></p>
+      <button type="button" onclick="closeModal('genericAlertModal')">Close</button>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="{% static 'js/app.js' %}"></script>
+
+</body>
+
+</html>

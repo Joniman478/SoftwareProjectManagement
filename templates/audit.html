@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cryptographic Audit Trail | NCI-SCP{% endblock %}
+
+{% block content %}
+<section id="audit-view" class="view-panel">
+  <div class="view-header-flex">
+    <div>
+      <h2 class="view-title">Tamper-Evident Cryptographic Audit Ledger</h2>
+      <p class="view-subtitle">Immutable chronological log of all supply chain events, customs status updates, and document verification hashes.</p>
+    </div>
+    <div class="view-header-actions">
+      <div class="search-input-wrapper">
+        <input type="text" id="auditSearchInput" placeholder="Filter audit ledger by actor or action..." onkeyup="filterAuditTable(this.value)">
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-section">
+    <div class="section-heading-flex">
+      <div>
+        <h3>System Event Ledger</h3>
+        <p class="text-subtle">Every transaction is timestamped and sealed with a SHA-256 digital cryptographic hash fingerprint.</p>
+      </div>
+      <span class="badge badge-success">✓ 100% Cryptographic Integrity</span>
+    </div>
+
+    <div class="table-responsive">
+      <table id="auditTrailTable">
+        <thead>
+          <tr>
+            <th>Timestamp (UTC)</th>
+            <th>Authorized Actor</th>
+            <th>Action Performed</th>
+            <th>Shipment Ref</th>
+            <th>SHA-256 Event Digest</th>
+          </tr>
+        </thead>
+        <tbody id="auditTrailTableBody">
+          {% for a in audit_trail %}
+          <tr>
+            <td style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
+              {{ a.created_at|date:"Y-m-d H:i:s" }}
+            </td>
+            <td style="font-weight: 700; color: var(--text-main);">
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--primary-light)" fill="none" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>{{ a.actor }}</span>
+              </div>
+            </td>
+            <td style="font-size: 0.88rem;">{{ a.action }}</td>
+            <td>
+              {% if a.shipment %}
+              <a href="javascript:void(0)" onclick="inspectShipment('{{ a.shipment.shipment_id }}')" class="link-action" style="font-weight: 700;">{{ a.shipment.shipment_id }}</a>
+              {% else %}
+              <span style="color: var(--text-dim);">SYSTEM</span>
+              {% endif %}
+            </td>
+            <td>
+              <code class="hash-code" style="color: var(--secondary-light);">{{ a.sha256_digest }}</code>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No audit records found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

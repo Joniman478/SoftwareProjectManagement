@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reports & Analytics | NCI-SCP{% endblock %}
+
+{% block content %}
+<section id="reports-view" class="view-panel">
+  <div class="view-header-flex">
+    <div>
+      <h2 class="view-title">Supply Chain Intelligence & Analytics</h2>
+      <p class="view-subtitle">National performance indicators, dry port dwell times, and customs revenue collections.</p>
+    </div>
+    <div class="view-header-actions">
+      <a href="/api/reports/export/?format=csv" class="secondary-btn" download>
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span>Export CSV Report</span>
+      </a>
+      <a href="/api/reports/export/?format=json" class="primary-btn" target="_blank">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+        <span>Export JSON Data</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Summary KPI Cards -->
+  <div class="cards">
+    <div class="card card-purple">
+      <h3>Total Imported Vehicles (2024 YTD)</h3>
+      <p class="number">142</p>
+      <p class="text-dim">Commercial & Passenger Fleet</p>
+    </div>
+    <div class="card card-cyan">
+      <h3>Average Clearance Time</h3>
+      <p class="number">4.2 Days</p>
+      <p class="text-dim">↓ 18% improvement from 2023</p>
+    </div>
+    <div class="card card-emerald">
+      <h3>Total Duty Collected</h3>
+      <p class="number">ETB 182.2M</p>
+      <p class="text-dim">Revenues remitted to ECC</p>
+    </div>
+    <div class="card card-amber">
+      <h3>Compliance & Verification Rate</h3>
+      <p class="number">99.4%</p>
+      <p class="text-dim">SHA-256 digital validation</p>
+    </div>
+  </div>
+
+  <!-- Monthly Trend Chart -->
+  <div class="dashboard-section glass-card-glow" style="margin-top: 1.5rem;">
+    <div class="section-heading-flex">
+      <div>
+        <h3>Monthly Consignment Inflow & Revenue Trend (Jan - May 2024)</h3>
+        <p class="text-subtle">Aggregated shipments processed through Djibouti-Modjo multimodal corridor.</p>
+      </div>
+    </div>
+    <div id="reportsAnalyticsChart" class="chart-wrapper" style="height: 260px;">
+      <!-- SVG Rendered via JS -->
+    </div>
+  </div>
+
+  <!-- Dry Port Performance Table -->
+  <div class="dashboard-section" style="margin-top: 1.5rem;">
+    <div class="section-heading-flex">
+      <div>
+        <h3>Dry Port Clearance Velocity & Operational Efficiency</h3>
+        <p class="text-subtle">Comparative throughput across Ethiopian customs dry port terminals.</p>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Dry Port Terminal</th>
+            <th>Throughput (Vehicles)</th>
+            <th>Average Dwell / Clearance Time</th>
+            <th>On-Time Compliance</th>
+            <th>Primary Railway Corridor</th>
+            <th>Operational Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 700; color: var(--secondary-light);">Modjo Dry Port & Terminal</td>
+            <td>86 Vehicles (60.5%)</td>
+            <td>4.1 Days</td>
+            <td><span class="badge badge-success">94% Efficiency</span></td>
+            <td>Ethio-Djibouti Main Line</td>
+            <td><span class="badge badge-primary">Optimal Throughput</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700; color: var(--secondary-light);">Kality Dry Port (Addis Ababa)</td>
+            <td>34 Vehicles (23.9%)</td>
+            <td>4.8 Days</td>
+            <td><span class="badge badge-success">89% Efficiency</span></td>
+            <td>Addis Ababa Inland Freight</td>
+            <td><span class="badge badge-primary">Optimal Throughput</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700; color: var(--secondary-light);">Dire Dawa Dry Port</td>
+            <td>14 Vehicles (9.8%)</td>
+            <td>5.2 Days</td>
+            <td><span class="badge badge-warning">86% Efficiency</span></td>
+            <td>Eastern Rail Interchange</td>
+            <td><span class="badge badge-warning">Moderate Congestion</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700; color: var(--secondary-light);">Kombolcha Dry Port</td>
+            <td>8 Vehicles (5.6%)</td>
+            <td>5.6 Days</td>
+            <td><span class="badge badge-warning">83% Efficiency</span></td>
+            <td>Northern Corridor Transit</td>
+            <td><span class="badge badge-secondary">Active Service</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}
